@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mobile
+package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/mysteriumnetwork/go-openvpn/openvpn3"
@@ -58,8 +60,13 @@ func (lc StdoutLogger) Log(text string) {
 	lc(text)
 }
 
-// StartSession starts the openvpn3 session for ios
-func StartSession() {
+func main() {
+	//if len(os.Args) < 2 {
+	//	fmt.Println("Missing profile file")
+	//	os.Exit(1)
+	//}
+	//profileName := os.Args[1]
+	profileName := "/Users/nate/go/src/github.com/mysteriumnetwork/go-openvpn/cmd/milk_test_mt.ovpn"
 
 	var logger StdoutLogger = func(text string) {
 		lines := strings.Split(text, "\n")
@@ -67,17 +74,19 @@ func StartSession() {
 			fmt.Println("Library check >>", line)
 		}
 	}
+
 	openvpn3.SelfCheck(logger)
 
-	session := openvpn3.NewMobileSession(
-		openvpn3.NewConfig(""),
-		openvpn3.UserCredentials{},
-		&loggingCallbacks{},
-		&openvpn3.NoOpTunnelSetup{},
-	)
+	bytes, err := ioutil.ReadFile(profileName)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	config := openvpn3.NewConfig(string(bytes))
 
+	session := openvpn3.NewSession(config, openvpn3.UserCredentials{}, &loggingCallbacks{})
 	session.Start()
-	err := session.Wait()
+	err = session.Wait()
 	if err != nil {
 		fmt.Println("Openvpn3 error: ", err)
 	} else {
