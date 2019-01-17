@@ -27,7 +27,7 @@ func NewConfig(profile string) Config {
 		GuiVersion:        "cli 1.0",
 		Info:              true,
 		ClockTickMS:       1000, // ticks every 1 sec
-		DisableClientCert: true,
+		DisableClientCert: false,
 		ConnTimeout:       10, // 10 seconds
 		TunPersist:        true,
 		CompressionMode:   "yes",

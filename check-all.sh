@@ -17,7 +17,10 @@ function verifyAndroidLib {
     return 0
 }
 
-./xgo-check.sh --targets=linux/amd64,darwin/amd64,windows/amd64 --out=build/desktop $GOPATH/src/github.com/mysteriumnetwork/go-openvpn/examples/desktop
-./xgo-check.sh --targets=ios/*,android/* --out=build/mobile $GOPATH/src/github.com/mysteriumnetwork/go-openvpn/examples/mobile
 
-verifyAndroidLib build/mobile.aar x86 x86_64 arm64-v8a armeabi-v7a
+./xgo-check.sh --targets=darwin/amd64,windows/amd64 --out=build/vpn-robot $GOPATH/src/github.com/mysteriumnetwork/go-openvpn/
+
+#./xgo-check.sh --targets=linux/amd64,darwin/amd64,windows/amd64 --out=build/desktop $GOPATH/src/github.com/mysteriumnetwork/go-openvpn/examples/desktop
+#./xgo-check.sh --targets=ios/*,android/* --out=build/mobile $GOPATH/src/github.com/mysteriumnetwork/go-openvpn/examples/mobile
+
+#verifyAndroidLib build/mobile.aar x86 x86_64 arm64-v8a armeabi-v7a

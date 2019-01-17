@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/mysteriumnetwork/go-openvpn/openvpn3"
+	"time"
 )
 
 type callbacks interface {
@@ -38,16 +39,16 @@ type loggingCallbacks struct {
 func (lc *loggingCallbacks) Log(text string) {
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
-		fmt.Println("Openvpn log >>", line)
+		fmt.Printf("[%s] Openvpn log >> %s\n", time.Now().Format("2006-01-02 15:04:05"), line)
 	}
 }
 
 func (lc *loggingCallbacks) OnEvent(event openvpn3.Event) {
-	fmt.Printf("Openvpn event >> %+v\n", event)
+	fmt.Printf("[%s] Openvpn event >> %+v\n", time.Now().Format("2006-01-02 15:04:05"), event)
 }
 
 func (lc *loggingCallbacks) OnStats(stats openvpn3.Statistics) {
-	fmt.Printf("Openvpn stats >> %+v\n", stats)
+	fmt.Printf("[%s] Openvpn stats >> %+v\n", time.Now().Format("2006-01-02 15:04:05"), stats)
 }
 
 var _ callbacks = &loggingCallbacks{}
@@ -61,12 +62,7 @@ func (lc StdoutLogger) Log(text string) {
 }
 
 func main() {
-	//if len(os.Args) < 2 {
-	//	fmt.Println("Missing profile file")
-	//	os.Exit(1)
-	//}
-	//profileName := os.Args[1]
-	profileName := "/Users/nate/go/src/github.com/mysteriumnetwork/go-openvpn/cmd/milk_test_mt.ovpn"
+	profileName := "client.ovpn"
 
 	var logger StdoutLogger = func(text string) {
 		lines := strings.Split(text, "\n")
@@ -84,7 +80,11 @@ func main() {
 	}
 	config := openvpn3.NewConfig(string(bytes))
 
-	session := openvpn3.NewSession(config, openvpn3.UserCredentials{}, &loggingCallbacks{})
+
+	session := openvpn3.NewSession(config, openvpn3.UserCredentials{
+		Username: "nate",
+		Password: "1111",
+	}, &loggingCallbacks{})
 	session.Start()
 	err = session.Wait()
 	if err != nil {
